@@ -24,15 +24,16 @@ public class filtr_max {
  image = ImageIO.read(input);
  width = image.getWidth();
  height = image.getHeight();
- int p = 8;
+ int rmax, gmax, bmax;
  //odczyt pixeli obrazu w dwóch pêtlach po kolumnach i wierszach
-
+ int[][] r = new int[width][height];
+ int[][] g = new int[width][height];
+ int[][] b = new int[width][height];
  for(int i=1; i<height-1; i++){
- for(int j=1; j<width-1; j++){
-	 int[] pomoc_r = new int[] {0,0,0,0,0,0,0,0,0};
-	 int[] pomoc_g = new int[] {0,0,0,0,0,0,0,0,0};
-	 int[] pomoc_b = new int[] {0,0,0,0,0,0,0,0,0};
-	 int g = 0;
+ for(int j=1; j<width-1; j++) {
+	 rmax = 0;
+	 gmax = 0;
+	 bmax = 0;
 	 
    for (int k=-1;k<=1;k++) {
      for (int l=-1; l<=1;l++) {
@@ -45,41 +46,48 @@ public class filtr_max {
         int green = (int)(c.getGreen());
         int blue = (int)(c.getBlue());
 
-       pomoc_r[g] = red;
-       pomoc_g[g] = green;
-       pomoc_b[g] = blue;
-       g++;
+        if (rmax < red) rmax = red;
+        if (gmax < green) gmax = green;
+        if (bmax < blue) bmax = blue;
    }
    }
-   //filtrowanie od najmiejszej do najwiêkszej wartoœci kolorów  
-   Arrays.sort(pomoc_g);
-   Arrays.sort(pomoc_b);
-
-  //System.out.println("\n" + pomoc_r[p] +" "+ pomoc_g[p] + " " + pomoc_b[p]);
-
-
- if (pomoc_r[p] >=0 && pomoc_r[p] <=255) {}
- else pomoc_r[p] = 0;
-
- if (pomoc_g[p] >=0 && pomoc_g[p] <=255) {}
- else pomoc_g[p] = 0;
-
- if (pomoc_b[p] >=0 && pomoc_b[p] <=255) {}
- else pomoc_b[p] = 0;
-
    
+ 
 
- Color newColor = new Color(pomoc_r[p], pomoc_g[p], pomoc_b[p]);
- image.setRGB(j,i,newColor.getRGB());
-
-
+   if (rmax>255) {
+   rmax=255;
+   }else if (rmax < 0){
+   rmax=0;
+   }
+   if (gmax>255) {
+   gmax=255;
+   }else if (gmax < 0){
+   gmax=0;
+   }
+   if (bmax>255) {
+   bmax=255;
+   }else if (bmax < 0){
+   bmax=0;
+   }
+   
+   r[j][i] = rmax;
+   g[j][i] = gmax;
+   b[j][i] = bmax;
 
  } //koniec dwóch pêtli po kolumnach i wierszach obrazu
  }
+ 
+ for(int q = 0; q < height; q++){
+	   for(int w = 0; w < width; w++){
+	   Color newColor = new Color(r[w][q], g[w][q], b[w][q]);
+	   image.setRGB(w,q,newColor.getRGB());
+	   }
+	   }
+
 
  //zapis do pliku zmodyfikowanego obrazu
 
- File ouptut = new File("filtr_min.jpg");
+ File ouptut = new File("filtr_max.jpg");
  ImageIO.write(image, "jpg", ouptut);
 
  } catch (Exception e) {}

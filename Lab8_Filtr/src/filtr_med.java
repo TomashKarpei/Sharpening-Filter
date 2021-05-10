@@ -52,6 +52,7 @@ public class filtr_med {
    }
    }
    //filtrowanie od najmiejszej do najwiêkszej wartoœci kolorów  
+   Arrays.sort(pomoc_r);
    Arrays.sort(pomoc_g);
    Arrays.sort(pomoc_b);
 

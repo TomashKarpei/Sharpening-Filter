@@ -24,15 +24,16 @@ public class filtr_min {
  image = ImageIO.read(input);
  width = image.getWidth();
  height = image.getHeight();
- int p = 0;
+ int rmin, gmin, bmin;
  //odczyt pixeli obrazu w dwóch pêtlach po kolumnach i wierszach
-
+ int[][] r = new int[width][height];
+ int[][] g = new int[width][height];
+ int[][] b = new int[width][height];
  for(int i=1; i<height-1; i++){
- for(int j=1; j<width-1; j++){
-	 int[] pomoc_r = new int[] {0,0,0,0,0,0,0,0,0};
-	 int[] pomoc_g = new int[] {0,0,0,0,0,0,0,0,0};
-	 int[] pomoc_b = new int[] {0,0,0,0,0,0,0,0,0};
-	 int g = 0;
+ for(int j=1; j<width-1; j++) {
+	 rmin = 255;
+	 gmin = 255;
+	 bmin = 255;
 	 
    for (int k=-1;k<=1;k++) {
      for (int l=-1; l<=1;l++) {
@@ -45,37 +46,43 @@ public class filtr_min {
         int green = (int)(c.getGreen());
         int blue = (int)(c.getBlue());
 
-       pomoc_r[g] = red;
-       pomoc_g[g] = green;
-       pomoc_b[g] = blue;
-       g++;
+        if (rmin > red) rmin = red;
+        if (gmin > green) gmin = green;
+        if (bmin > blue) bmin = blue;
    }
    }
-   //filtrowanie od najmiejszej do najwiêkszej wartoœci kolorów  
-   Arrays.sort(pomoc_g);
-   Arrays.sort(pomoc_b);
-
-  //System.out.println("\n" + pomoc_r[p] +" "+ pomoc_g[p] + " " + pomoc_b[p]);
-
-
- if (pomoc_r[p] >=0 && pomoc_r[p] <=255) {}
- else pomoc_r[p] = 0;
-
- if (pomoc_g[p] >=0 && pomoc_g[p] <=255) {}
- else pomoc_g[p] = 0;
-
- if (pomoc_b[p] >=0 && pomoc_b[p] <=255) {}
- else pomoc_b[p] = 0;
-
    
+ 
 
- Color newColor = new Color(pomoc_r[p], pomoc_g[p], pomoc_b[p]);
- image.setRGB(j,i,newColor.getRGB());
-
-
+   if (rmin>255) {
+   rmin=255;
+   }else if (rmin < 0){
+   rmin=0;
+   }
+   if (gmin>255) {
+   gmin=255;
+   }else if (gmin < 0){
+   gmin=0;
+   }
+   if (bmin>255) {
+   bmin=255;
+   }else if (bmin < 0){
+   bmin=0;
+   }
+   
+   r[j][i] = rmin;
+   g[j][i] = gmin;
+   b[j][i] = bmin;
 
  } //koniec dwóch pêtli po kolumnach i wierszach obrazu
  }
+ 
+ for(int q = 0; q < height; q++){
+	   for(int w = 0; w < width; w++){
+	   Color newColor = new Color(r[w][q], g[w][q], b[w][q]);
+	   image.setRGB(w,q,newColor.getRGB());
+	   }
+	   }
 
  //zapis do pliku zmodyfikowanego obrazu
 
